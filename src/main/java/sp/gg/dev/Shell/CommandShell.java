@@ -8,6 +8,7 @@ import sp.gg.dev.bot.DiscordAPI;
 
 @ShellComponent
 public class CommandShell {
+    private final DiscordAPI discordAPI = new DiscordAPI();
 
     @ShellMethod(value = "hello world", key = "hi")
     public String hello(@ShellOption(defaultValue = "world!") String text) {
@@ -21,16 +22,16 @@ public class CommandShell {
 
     @ShellMethod(value = "Enable Discord BOT Service", key = "-startbot")
     public void EnableBot() {
-        DiscordAPI.Start();
+        discordAPI.Start();
     }
 
-    @ShellMethod(value = "Enable Discord BOT Service", key = "-stopbot")
+    @ShellMethod(value = "Disable Discord BOT Service", key = "-stopbot")
     public void DisableBot() {
-        DiscordAPI.disableBot();
+        discordAPI.disableBot();
     }
 
     @ShellMethod(value = "Change BOT Status", key = "-changeStatus")
     public void ChangeStatus(String statusMessage) {
-        DiscordAPI.setActivity(Activity.competing(statusMessage));
+        discordAPI.setActivity(Activity.competing(statusMessage));
     }
 }

@@ -2,7 +2,6 @@ package sp.gg.dev.bot;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
@@ -18,8 +17,6 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
-import org.springframework.beans.factory.annotation.Value;
-
 import java.util.EnumSet;
 import java.util.concurrent.TimeUnit;
 
@@ -28,27 +25,26 @@ import static net.dv8tion.jda.api.interactions.commands.OptionType.*;
 public class DiscordAPI extends ListenerAdapter {
 
     private static JDA jda;
+    private final BotObject bot = new BotObject();
 
-    @Value("${discord.token}")
-    private static String token;
-
-    private static Activity activity = Activity.competing("개발 작업중");
-
-    public static void setActivity(Activity activity) {
-        DiscordAPI.activity = activity;
-        jda.shutdown();
-        Start();
-    }
-
-    public static void disableBot() {
-        jda.shutdown();
-    }
-
-    public static void Start() {
-        jda = JDABuilder.createLight(token, EnumSet.noneOf(GatewayIntent.class)) // slash commands don't need any intents
+    public void setActivity(Activity activity) {
+        bot.setActivity(activity);
+        jda = JDABuilder.createLight(bot.getToken(), EnumSet.noneOf(GatewayIntent.class)) // slash commands don't need any intents
                 .addEventListeners(new DiscordAPI())
-                .setActivity(activity)
-                .setStatus(OnlineStatus.DO_NOT_DISTURB)
+                .setActivity(bot.getActivity())
+                .setStatus(bot.getOnlineStatus())
+                .build();
+    }
+
+    public void disableBot() {
+        jda.shutdown();
+    }
+
+    public void Start() {
+        jda = JDABuilder.createLight(bot.getToken(), EnumSet.noneOf(GatewayIntent.class)) // slash commands don't need any intents
+                .addEventListeners(new DiscordAPI())
+                .setActivity(bot.getActivity())
+                .setStatus(bot.getOnlineStatus())
                 .build();
 
         // These commands might take a few minutes to be active after creation/update/delete
@@ -56,7 +52,7 @@ public class DiscordAPI extends ListenerAdapter {
 
         // Moderation commands with required options
         commands.addCommands(
-                Commands.slash("ban", "Ban a user from this server. Requires permission to ban users.")
+                Commands.slash("밴", "Ban a user from this server. Requires permission to ban users.")
                         .addOptions(new OptionData(USER, "user", "The user to ban") // USER type allows to include members of the server or other users by id
                                 .setRequired(true)) // This command requires a parameter
                         .addOptions(new OptionData(INTEGER, "del_days", "Delete messages from the past days.") // This is optional
@@ -68,19 +64,19 @@ public class DiscordAPI extends ListenerAdapter {
 
         // Simple reply commands
         commands.addCommands(
-                Commands.slash("say", "Makes the bot say what you tell it to")
+                Commands.slash("말", "Makes the bot say what you tell it to")
                         .addOption(STRING, "content", "What the bot should say", true) // you can add required options like this too
         );
 
         // Commands without any inputs
         commands.addCommands(
-                Commands.slash("leave", "Make the bot leave the server")
+                Commands.slash("서버나가기", "Make the bot leave the server")
                         .setGuildOnly(true) // this doesn't make sense in DMs
                         .setDefaultPermissions(DefaultMemberPermissions.DISABLED) // only admins should be able to use this command.
         );
 
         commands.addCommands(
-                Commands.slash("prune", "Prune messages from this channel")
+                Commands.slash("채팅청소", "Prune messages from this channel")
                         .addOption(INTEGER, "amount", "How many messages to prune (Default 100)") // simple optional argument
                         .setGuildOnly(true)
                         .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.MESSAGE_MANAGE))
@@ -98,14 +94,14 @@ public class DiscordAPI extends ListenerAdapter {
         if (event.getGuild() == null)
             return;
         switch (event.getName()) {
-            case "ban" -> {
+            case "밴" -> {
                 Member member = event.getOption("user").getAsMember(); // the "user" option is required, so it doesn't need a null-check here
                 User user = event.getOption("user").getAsUser();
                 ban(event, user, member);
             }
-            case "say" -> say(event, event.getOption("content").getAsString()); // content is required so no null-check here
-            case "leave" -> leave(event);
-            case "prune" -> // 2 stage command with a button prompt
+            case "말" -> say(event, event.getOption("content").getAsString()); // content is required so no null-check here
+            case "서버나가기" -> leave(event);
+            case "채팅청소" -> // 2 stage command with a button prompt
                     prune(event);
             default -> event.reply("I can't handle that command right now :(").setEphemeral(true).queue();
         }
