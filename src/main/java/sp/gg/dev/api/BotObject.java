@@ -1,16 +1,15 @@
-package sp.gg.dev.bot;
+package sp.gg.dev.api;
 
 import lombok.Getter;
-
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 
-@NoArgsConstructor
+@RequiredArgsConstructor
 @Getter @Setter
 public class BotObject {
-    public String token = "NDg3ODk3NDIxNDAyMDc5MjMz.GQLpfI.N96Rq5Zfp5ekLVjYkquzjYxIqwUFITDkaxyYDE";
     private Activity activity = Activity.competing("현재 개발 작업중");
     private OnlineStatus onlineStatus = OnlineStatus.DO_NOT_DISTURB;
+    private boolean idle = false; // AFK 표시여부
 }

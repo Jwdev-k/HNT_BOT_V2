@@ -39,3 +39,4 @@ out/
 ### Custom ###
 spring-shell.log
 /src/main/resources/discord.properties
+/logs

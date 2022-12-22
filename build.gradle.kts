@@ -23,7 +23,7 @@ repositories {
 extra["springShellVersion"] = "3.0.0-M3"
 
 dependencies {
-	implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.0")
+	implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.1")
 	implementation("org.springframework.shell:spring-shell-starter")
 	compileOnly("org.projectlombok:lombok")
 	runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
