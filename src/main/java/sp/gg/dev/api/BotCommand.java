@@ -41,6 +41,16 @@ public class BotCommand extends ListenerAdapter {
             case "프로필" -> {
                 profileImg(event);
             }
+            case "가위바위보" -> {
+                event.reply("가위,바위,보 중 골라줘!")
+                        .addActionRow(Button.secondary("rps:r", "가위")
+                                , Button.secondary("rps:p", "바위")
+                                , Button.secondary("rps:s", "보")).queue();
+            }
+            case "주사위" -> {
+                event.reply((int)((Math.random() * event.getOption("count").getAsInt()) + 1)
+                        + "이(가) 나왔어!").queue();
+            }
             default -> event.reply("존재 하지 않는 명령어야! :(").setEphemeral(true).queue();
         }
     }
@@ -48,24 +58,70 @@ public class BotCommand extends ListenerAdapter {
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
         String[] id = event.getComponentId().split(":"); // this is the custom id we specified in our button
-        String authorId = id[0];
-        String type = id[1];
-        // Check that the button is for the user that clicked it, otherwise just ignore the event (let interaction fail)
-        if (!authorId.equals(event.getUser().getId()))
-            return;
-        event.deferEdit().queue(); // acknowledge the button was clicked, otherwise the interaction will fail
-
-        MessageChannel channel = event.getChannel();
-        switch (type) {
-            case "prune":
-                int amount = Integer.parseInt(id[2]);
-                event.getChannel().getIterableHistory()
-                        .skipTo(event.getMessageIdLong())
-                        .takeAsync(amount)
-                        .thenAccept(channel::purgeMessages);
-                // fallthrough delete the prompt message with our buttons
-            case "delete":
-                event.getHook().deleteOriginal().queue();
+        String eventName = id[0];
+        switch (eventName) {
+            case "채팅청소" -> {
+                String type = id[1];
+                // Check that the button is for the user that clicked it, otherwise just ignore the event (let interaction fail)
+                event.deferEdit().queue(); // acknowledge the button was clicked, otherwise the interaction will fail
+                MessageChannel channel = event.getChannel();
+                switch (type) {
+                    case "prune":
+                        int amount = Integer.parseInt(id[2]);
+                        event.getChannel().getIterableHistory()
+                                .skipTo(event.getMessageIdLong())
+                                .takeAsync(amount)
+                                .thenAccept(channel::purgeMessages);
+                        // fallthrough delete the prompt message with our buttons
+                    case "delete":
+                        event.getHook().deleteOriginal().queue();
+                }
+            }
+            case "rps" -> {
+                String[] rps = new String[]{"가위", "바위", "보"};
+                int num = (int) Math.round(Math.random() * (rps.length - 1));
+                String result = rps[num];
+                String userResult = event.getButton().getLabel();
+                String userID = event.getUser().getName();
+                if (result.equals(event.getButton().getLabel())) {
+                    event.editMessage(userID + ": " + event.getButton().getLabel() + "\n"
+                            + "Hinata : " + result + "\n"
+                            + "뭐야 비겼잖아 다시해!!").queue();
+                }
+                if (userResult.equals("가위")) {
+                    if (result.equals("바위")) {
+                        event.editMessage(userID + ": " + event.getButton().getLabel() + "\n"
+                                + "Hinata : " + result + "\n"
+                                + "내가 이겼어 ㅎㅎ").queue();
+                    } else {
+                        event.editMessage(userID + ": " + event.getButton().getLabel() + "\n"
+                                + "Hinata : " + result + "\n"
+                                + "내가 졌어 ㅠㅠ").queue();
+                    }
+                }
+                if (userResult.equals("바위")) {
+                    if (result.equals("보")) {
+                        event.editMessage(userID + ": " + event.getButton().getLabel() + "\n"
+                                + "Hinata : " + result + "\n"
+                                + "내가 이겼어 ㅎㅎ").queue();
+                    } else {
+                        event.editMessage(userID + ": " + event.getButton().getLabel() + "\n"
+                                + "Hinata : " + result + "\n"
+                                + "내가 졌어 ㅠㅠ").queue();
+                    }
+                }
+                if (userResult.equals("보")) {
+                    if (result.equals("가위")) {
+                        event.editMessage(userID + ": " + event.getButton().getLabel() + "\n"
+                                + "Hinata : " + result + "\n"
+                                + "내가 이겼어 ㅎㅎ").queue();
+                    } else {
+                        event.editMessage(userID + ": " + event.getButton().getLabel() + "\n"
+                                + "Hinata : " + result + "\n"
+                                + "내가 졌어 ㅠㅠ").queue();
+                    }
+                }
+            }
         }
     }
 
@@ -122,19 +178,18 @@ public class BotCommand extends ListenerAdapter {
         int amount = amountOption == null
                 ? 100 // default 100
                 : (int) Math.min(200, Math.max(2, amountOption.getAsLong())); // enforcement: must be between 2-200
-        String userId = event.getUser().getId();
         event.reply(amount + " 개의 메세지를 정말로 삭제 할거야?") // prompt the user with a button menu
                 .addActionRow(// this means "<style>(<id>, <label>)", you can encode anything you want in the id (up to 100 characters)
-                        Button.secondary(userId + ":delete", "ㄴㄴ"),
-                        Button.danger(userId + ":prune:" + amount, "삭제할래!")) // the first parameter is the component id we use in onButtonInteraction above
-                .queue();
+                        Button.secondary("채팅청소" + ":delete", "ㄴㄴ"),
+                        Button.danger("채팅청소" + ":prune:" + amount, "삭제할래!")) // the first parameter is the component id we use in onButtonInteraction above
+                .setEphemeral(true).queue();
     }
 
     public void profileImg(SlashCommandInteractionEvent event) {
         EmbedBuilder eb = new EmbedBuilder();
         User asUser = event.getOption("user").getAsUser();
         eb.setTitle(asUser.getAsTag() + "님의 프로필 사진")
-                .setImage(asUser.getAvatarUrl())
+                .setImage(asUser.getAvatarUrl() + "?size=512")
                 .setColor(Color.RED);
         event.replyEmbeds(eb.build()).queue();
     }
