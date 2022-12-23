@@ -12,7 +12,9 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import org.springframework.boot.SpringBootVersion;
 
+import java.awt.*;
 import java.util.concurrent.TimeUnit;
 
 public class BotCommand extends ListenerAdapter {
@@ -23,6 +25,10 @@ public class BotCommand extends ListenerAdapter {
         if (event.getGuild() == null)
             return;
         switch (event.getName()) {
+            case "버전정보" -> {
+                event.reply("Discord API Version : 5.0.0-beta.2\n" +
+                        "Server Version : SpringBoot " + SpringBootVersion.getVersion()).queue();
+            }
             case "사용자추방" -> {
                 Member member = event.getOption("user").getAsMember(); // the "user" option is required, so it doesn't need a null-check here
                 User user = event.getOption("user").getAsUser();
@@ -35,7 +41,7 @@ public class BotCommand extends ListenerAdapter {
             case "프로필" -> {
                 profileImg(event);
             }
-            default -> event.reply("I can't handle that command right now :(").setEphemeral(true).queue();
+            default -> event.reply("존재 하지 않는 명령어야! :(").setEphemeral(true).queue();
         }
     }
 
@@ -104,9 +110,9 @@ public class BotCommand extends ListenerAdapter {
 
     public void leave(SlashCommandInteractionEvent event) {
         if (!event.getMember().hasPermission(Permission.KICK_MEMBERS))
-            event.reply("You do not have permissions to kick me.").setEphemeral(true).queue();
+            event.reply("넌 나를 추방할 권한이 없어").setEphemeral(true).queue();
         else
-            event.reply("Leaving the server... :wave:") // Yep we received it
+            event.reply("서버에서 나갈게!.. :wave:") // Yep we received it
                     .flatMap(v -> event.getGuild().leave()) // Leave server after acknowledging the command
                     .queue();
     }
@@ -117,19 +123,20 @@ public class BotCommand extends ListenerAdapter {
                 ? 100 // default 100
                 : (int) Math.min(200, Math.max(2, amountOption.getAsLong())); // enforcement: must be between 2-200
         String userId = event.getUser().getId();
-        event.reply("This will delete " + amount + " messages.\nAre you sure?") // prompt the user with a button menu
+        event.reply(amount + " 개의 메세지를 정말로 삭제 할거야?") // prompt the user with a button menu
                 .addActionRow(// this means "<style>(<id>, <label>)", you can encode anything you want in the id (up to 100 characters)
-                        Button.secondary(userId + ":delete", "Nevermind!"),
-                        Button.danger(userId + ":prune:" + amount, "Yes!")) // the first parameter is the component id we use in onButtonInteraction above
+                        Button.secondary(userId + ":delete", "ㄴㄴ"),
+                        Button.danger(userId + ":prune:" + amount, "삭제할래!")) // the first parameter is the component id we use in onButtonInteraction above
                 .queue();
     }
 
     public void profileImg(SlashCommandInteractionEvent event) {
         EmbedBuilder eb = new EmbedBuilder();
-        Member member = event.getOption("user").getAsMember();
-        eb.setTitle(member.getNickname() + "님의 프로필 사진")
-                .setImage(member.getAvatarUrl());
-        event.replyEmbeds(eb.build());
+        User asUser = event.getOption("user").getAsUser();
+        eb.setTitle(asUser.getAsTag() + "님의 프로필 사진")
+                .setImage(asUser.getAvatarUrl())
+                .setColor(Color.RED);
+        event.replyEmbeds(eb.build()).queue();
     }
 
     @Override

@@ -33,7 +33,7 @@ public class CommandShell {
         discordAPI.disableBot();
     }
 
-    @ShellMethod(value = "Change BOT Status", key = "-changeStatus")
+    @ShellMethod(value = "Change BOT Status Message", key = "-changeStatus")
     public void ChangeStatus(String statusMessage) {
         discordAPI.setActivity(Activity.competing(statusMessage), token);
     }
