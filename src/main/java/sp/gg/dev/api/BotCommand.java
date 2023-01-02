@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.springframework.boot.SpringBootVersion;
+import sp.gg.dev.api.minigame.RPS;
 
 import java.awt.*;
 import java.util.concurrent.TimeUnit;
@@ -78,49 +79,7 @@ public class BotCommand extends ListenerAdapter {
                 }
             }
             case "rps" -> {
-                String[] rps = new String[]{"가위", "바위", "보"};
-                int num = (int) Math.round(Math.random() * (rps.length - 1));
-                String result = rps[num];
-                String userResult = event.getButton().getLabel();
-                String userID = event.getUser().getName();
-                if (result.equals(event.getButton().getLabel())) {
-                    event.editMessage(userID + ": " + event.getButton().getLabel() + "\n"
-                            + "Hinata : " + result + "\n"
-                            + "뭐야 비겼잖아 다시해!!").queue();
-                }
-                if (userResult.equals("가위")) {
-                    if (result.equals("바위")) {
-                        event.editMessage(userID + ": " + event.getButton().getLabel() + "\n"
-                                + "Hinata : " + result + "\n"
-                                + "내가 이겼어 ㅎㅎ").queue();
-                    } else {
-                        event.editMessage(userID + ": " + event.getButton().getLabel() + "\n"
-                                + "Hinata : " + result + "\n"
-                                + "내가 졌어 ㅠㅠ").queue();
-                    }
-                }
-                if (userResult.equals("바위")) {
-                    if (result.equals("보")) {
-                        event.editMessage(userID + ": " + event.getButton().getLabel() + "\n"
-                                + "Hinata : " + result + "\n"
-                                + "내가 이겼어 ㅎㅎ").queue();
-                    } else {
-                        event.editMessage(userID + ": " + event.getButton().getLabel() + "\n"
-                                + "Hinata : " + result + "\n"
-                                + "내가 졌어 ㅠㅠ").queue();
-                    }
-                }
-                if (userResult.equals("보")) {
-                    if (result.equals("가위")) {
-                        event.editMessage(userID + ": " + event.getButton().getLabel() + "\n"
-                                + "Hinata : " + result + "\n"
-                                + "내가 이겼어 ㅎㅎ").queue();
-                    } else {
-                        event.editMessage(userID + ": " + event.getButton().getLabel() + "\n"
-                                + "Hinata : " + result + "\n"
-                                + "내가 졌어 ㅠㅠ").queue();
-                    }
-                }
+                RPS.init(event);
             }
         }
     }
