@@ -93,6 +93,10 @@ public class DiscordAPI {
                 Commands.slash("가위바위보", "^~^ Zzz...")
         );
         commands.addCommands(
+                Commands.slash("가위바위보정보", "미니게임의 전적을 가져올게!")
+        );
+
+        commands.addCommands(
                 Commands.slash("주사위", "최대 숫자를 입력해줘! (1 ~ XXX)")
                         .addOption(INTEGER, "count", "원하는 값으로 설정해줘!", true)
         );

@@ -14,6 +14,7 @@ import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.springframework.boot.SpringBootVersion;
 import sp.gg.dev.api.minigame.RPS;
+import sp.gg.dev.api.minigame.Record;
 
 import java.awt.*;
 import java.util.concurrent.TimeUnit;
@@ -27,7 +28,7 @@ public class BotCommand extends ListenerAdapter {
             return;
         switch (event.getName()) {
             case "버전정보" -> {
-                event.reply("Discord API Version : 5.0.0-beta.2\n" +
+                event.reply("Discord API Version : 5.0.0-beta.22\n" +
                         "Server Version : SpringBoot " + SpringBootVersion.getVersion()).queue();
             }
             case "사용자추방" -> {
@@ -48,9 +49,30 @@ public class BotCommand extends ListenerAdapter {
                                 , Button.secondary("rps:p", "바위")
                                 , Button.secondary("rps:s", "보")).queue();
             }
+            case "가위바위보정보" -> {
+                EmbedBuilder eb = new EmbedBuilder();
+                Record record = RPS.getUserRpsRecord(event.getUser().getId());
+                if(record != null) {
+
+                    eb.setColor(0xFFA500); // 주황색
+
+                    // 타이틀 설정
+                    eb.setTitle(record.getName() + "님의 전적");
+
+                    // 전적 정보 추가
+                    eb.addField("승리", String.valueOf(record.getWin()), true);
+                    eb.addField("패배", String.valueOf(record.getLose()), true);
+                    eb.addField("무승부", String.valueOf(record.getDraw()), true);
+                    eb.addField("총 플레이 횟수", String.valueOf(record.getPlayCount()), true);
+
+                    event.replyEmbeds(eb.build()).queue();
+                } else {
+                    event.reply("가위바위보를 한번도 하지 않았어..").queue();
+                }
+            }
             case "주사위" -> {
-                event.reply((int)((Math.random() * event.getOption("count").getAsInt()) + 1)
-                        + "이(가) 나왔어!").queue();
+                int randomNumber = (int)((Math.random() * event.getOption("count").getAsInt()) + 1);
+                event.reply(randomNumber + "이(가) 나왔어!").queue();
             }
             default -> event.reply("존재 하지 않는 명령어야! :(").setEphemeral(true).queue();
         }
