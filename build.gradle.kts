@@ -1,13 +1,12 @@
 plugins {
 	java
-	id("org.springframework.boot") version "3.0.0"
-	id("io.spring.dependency-management") version "1.1.0"
-	id("org.graalvm.buildtools.native") version "0.9.18"
+	id("org.springframework.boot") version "3.2.5"
+	id("io.spring.dependency-management") version "1.1.4"
+	id("org.graalvm.buildtools.native") version "0.10.1"
 }
 
 group = "sp.gg"
-version = "0.0.1-SNAPSHOT"
-java.sourceCompatibility = JavaVersion.VERSION_17
+version = "0.2"
 
 configurations {
 	compileOnly {
@@ -20,17 +19,15 @@ repositories {
 	maven { url = uri("https://repo.spring.io/milestone") }
 }
 
-extra["springShellVersion"] = "3.0.0-M3"
+extra["springShellVersion"] = "3.2.3"
 
 dependencies {
-	implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.1")
 	implementation("org.springframework.shell:spring-shell-starter")
 	compileOnly("org.projectlombok:lombok")
-	runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
-	implementation("net.dv8tion:JDA:5.0.0-beta.2")
+	implementation("net.dv8tion:JDA:5.0.0-beta.22")
 }
 
 dependencyManagement {
