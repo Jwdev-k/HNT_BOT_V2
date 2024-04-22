@@ -36,12 +36,12 @@ public class RPS {
                     event.reply(userName + ": " + event.getButton().getLabel() + "\n"
                             + "Hinata : " + result + "\n"
                             + "내가 이겼어 ㅎㅎ").queue();
-                    userRecord.setInfo(1, 0, 0, 1);
+                    userRecord.setInfo(0, 1, 0, 1);
                 } else {
                     event.reply(userName + ": " + event.getButton().getLabel() + "\n"
                             + "Hinata : " + result + "\n"
                             + "내가 졌어 ㅠㅠ").queue();
-                    userRecord.setInfo(0, 1, 0, 1);
+                    userRecord.setInfo(1, 0, 0, 1);
                 }
             }
             if (userResult.equals("바위")) {
@@ -49,12 +49,12 @@ public class RPS {
                     event.reply(userName + ": " + event.getButton().getLabel() + "\n"
                             + "Hinata : " + result + "\n"
                             + "내가 이겼어 ㅎㅎ").queue();
-                    userRecord.setInfo(1, 0, 0, 1);
+                    userRecord.setInfo(0, 1, 0, 1);
                 } else {
                     event.reply(userName + ": " + event.getButton().getLabel() + "\n"
                             + "Hinata : " + result + "\n"
                             + "내가 졌어 ㅠㅠ").queue();
-                    userRecord.setInfo(0, 1, 0, 1);
+                    userRecord.setInfo(1, 0, 0, 1);
                 }
             }
             if (userResult.equals("보")) {
@@ -62,12 +62,12 @@ public class RPS {
                     event.reply(userName + ": " + event.getButton().getLabel() + "\n"
                             + "Hinata : " + result + "\n"
                             + "내가 이겼어 ㅎㅎ").queue();
-                    userRecord.setInfo(1, 0, 0, 1);
+                    userRecord.setInfo(0, 1, 0, 1);
                 } else {
                     event.reply(userName + ": " + event.getButton().getLabel() + "\n"
                             + "Hinata : " + result + "\n"
                             + "내가 졌어 ㅠㅠ").queue();
-                    userRecord.setInfo(0, 1, 0, 1);
+                    userRecord.setInfo(1, 0, 0, 1);
                 }
             }
         }
