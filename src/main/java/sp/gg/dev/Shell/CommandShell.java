@@ -18,9 +18,16 @@ public class CommandShell {
         return "hello " + text;
     }
 
-    @ShellMethod(value = "sum numbers", key = "-sum")
-    public String sum(int a, int b){
-        return "sum = " + (a + b);
+    @ShellMethod(value = "sum numbers ex) -sum 1 + 1", key = "-sum")
+    public String sum(@ShellOption(value = "a") int a, @ShellOption(value = "expression") String expression,
+                      @ShellOption(value = "b") int b){
+        return switch (expression) {
+            case "+" -> "sum = " + (a + b);
+            case "-" -> "sum = " + (a - b);
+            case "*" -> "sum = " + (a * b);
+            case "/" -> "sum = " + (a / b);
+            default -> "잘못된 수식 입니다.";
+        };
     }
 
     @ShellMethod(value = "Enable Discord BOT Service", key = "-startbot")

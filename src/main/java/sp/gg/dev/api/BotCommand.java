@@ -28,7 +28,7 @@ public class BotCommand extends ListenerAdapter {
             return;
         switch (event.getName()) {
             case "버전정보" -> {
-                event.reply("Discord API Version : 5.0.0-beta.22\n" +
+                event.reply("Discord API Version : 5.1.0\n" +
                         "Server Version : SpringBoot " + SpringBootVersion.getVersion()).queue();
             }
             case "사용자추방" -> {
